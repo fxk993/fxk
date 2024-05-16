@@ -21,6 +21,7 @@ public:
 	}
 };
 using StackAllcoator = MallocStackAllocator;
+//获取当前协程id
 uint64_t Fiber::GetFiberId()
 {
 	if (t_fiber)
@@ -29,9 +30,10 @@ uint64_t Fiber::GetFiberId()
 	}
 	return 0;
 }
+//构造主协程
 Fiber::Fiber() {
 	m_state = EXEC;
-	SetThis(this);
+	SetThis(this);//将当前协程设置为主协程
 	if (getcontext(&m_ctx))
 	{
 		SYLAR_ASSERT2(false, "getcontext");
@@ -39,6 +41,7 @@ Fiber::Fiber() {
 	++s_fiber_count;
 	SYLAR_LOG_DEBUG(g_logger) << "Fiber::Fiber main";
 }
+//创建子协程
 Fiber::Fiber(std::function<void()>cb, size_t stacksize, bool use_caller)
 	:m_id(++s_fiber_id), m_cb(cb)
 {
@@ -86,7 +89,7 @@ Fiber::~Fiber()
 	SYLAR_LOG_DEBUG(g_logger) << "Fiber::~Fiber id=" << m_id 
 		<< "total=" << s_fiber_count;
 }
-
+//重置协程，改变协程绑定的函数，不释放原来的协程，
 void Fiber::reset(std::function<void()>cb)
 {
 	SYLAR_ASSERT(m_stack);
@@ -103,6 +106,7 @@ void Fiber::reset(std::function<void()>cb)
 	makecontext(&m_ctx, &Fiber::MainFunc, 0);
 	m_state = INIT;
 }
+//从主协程切换到本协程执行
 void Fiber::call()
 {
 	SetThis(this);
@@ -112,6 +116,7 @@ void Fiber::call()
 		SYALR_ASSERT2(false, "swapcontext");
 	}
 }
+//从本协程切换到主协程
 void Fiber::back()
 {
 	SetThis(t_threadFiber.get());
@@ -130,17 +135,19 @@ void Fiber::swapIn()
 		SYLAR_ASSERT2(false, "swapcontext");
 	}
 }
+//设置当前协程
 vodi Fiber::SetThis(Fiber* f)
 {
 	t_fiber = f;
 }
+//获取当前协程，如果不存在则创建主协程，并返回主协程
 Fiber::_ptr Fiber::GetThis()
 {
 	if (t_fiber)
 	{
 		return t_fiber->shared_from_this();
 	}
-	Fiber::ptr main_fiber(new Fiber);
+	Fiber::ptr main_fiber(new Fiber);//如果当前携程不存在，创建主协程
 	SYLAR_ASSERT(t_fiber == main_fiber.get());
 	t_threadFiber = main_fiber;
 	return t_fiber->shared_from_this();
