@@ -212,7 +212,7 @@ void Fiber::CallerMainFunc()
 			<< "fiber_id=" << cur->getId()
 			<< std::endl << sylar::BacktraceToString();
 	}
-	catch (...)
+	catch (...) //²¶×½ËùÓÐ´íÎó
 	{
 		cur->m_state = EXCEPT;
 		SYALR_LOG_ERROR(g_logger) << "Fiber Except" << "fiber_id=" << cur->getId() <<
