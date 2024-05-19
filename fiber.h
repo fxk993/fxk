@@ -20,11 +20,13 @@ public:
 		EXCEPET
 	};
 private:
+	//私有构造函数u，不允许类外调用，通过getthis获取主协程
 	Fiber();
 public:
+	//子协程构造函数
 	Fiber(std::function<void()> cb,
 		size_t stacksize = 0,
-		bool use_caller = false)；
+		bool use_caller = false);
 		~Fiber();
 	void reset(std::function<void()>cb);
 	void swapIn();
