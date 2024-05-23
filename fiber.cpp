@@ -169,6 +169,7 @@ uint64_t Fiber::TotalFibers()
 {
 	return s_fiber_count;
 }
+//普通协程入口函数
 void Fiber::MainFunc()
 {
 	Fiber::ptr cur = GetThis();
@@ -197,6 +198,7 @@ void Fiber::MainFunc()
 	SYLAR_ASSERT2(false, "never reach fiber_id=" +
 		std::to_string(raw_ptr->getId()));
 }
+//调度协程入口函数
 void Fiber::CallerMainFunc()
 {
 	Fiber::ptr cur = GetThis();
