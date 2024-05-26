@@ -115,7 +115,7 @@ namespace sylar
 		}
 	}
 	//携程调度绑定函数
-	//dsajdkjad
+	//dsajdkjaddsadasdadsjik
 	void Scheduler::run()
 	{
 		SYLAR_LOG_DEBUG(g_logger) << m_name << "run";
