@@ -116,7 +116,8 @@ namespace sylar {
         //if(exit_on_this_fiber) {
         //}
     }
-
+    
+    //xfdsfsdsadasdasdasd
     void Scheduler::setThis() {
         t_scheduler = this;
     }
