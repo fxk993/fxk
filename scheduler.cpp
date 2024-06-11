@@ -63,8 +63,13 @@ namespace sylar {
                 , m_name + "_" + std::to_string(i)));
             m_threadIds.push_back(m_threads[i]->getId());
         }
+        lock.unlock();
 
-      
+        //if(m_rootFiber) {
+        //    //m_rootFiber->swapIn();
+        //    m_rootFiber->call();
+        //    SYLAR_LOG_INFO(g_logger) << "call out " << m_rootFiber->getState();
+        //}
     }
 
     void Scheduler::stop() {
@@ -81,6 +86,7 @@ namespace sylar {
             }
         }
 
+        //bool exit_on_this_fiber = false;
         if (m_rootThread != -1) {
             SYLAR_ASSERT(GetThis() == this);
         }
@@ -98,7 +104,15 @@ namespace sylar {
         }
 
         if (m_rootFiber) {
-           
+            //while(!stopping()) {
+            //    if(m_rootFiber->getState() == Fiber::TERM
+            //            || m_rootFiber->getState() == Fiber::EXCEPT) {
+            //        m_rootFiber.reset(new Fiber(std::bind(&Scheduler::run, this), 0, true));
+            //        SYLAR_LOG_INFO(g_logger) << " root fiber is term, reset";
+            //        t_fiber = m_rootFiber.get();
+            //    }
+            //    m_rootFiber->call();
+            //}
             if (!stopping()) {
                 m_rootFiber->call();
             }
@@ -116,8 +130,7 @@ namespace sylar {
         //if(exit_on_this_fiber) {
         //}
     }
-    
-    //xfdsfsdsadasdasdasd
+
     void Scheduler::setThis() {
         t_scheduler = this;
     }
